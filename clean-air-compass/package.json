@@ -1,0 +1,27 @@
+{
+  "name": "clean-air-compass",
+  "version": "1.0.0",
+  "description": "GenAI-powered assistant that helps families and communities navigate winter smog with low-emission routines, indoor air hacks and sustainable swaps, with the impact of every choice explained.",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test",
+    "check": "node --check server.js && node --check public/app.js && node --check scripts/diagnose.js",
+    "diagnose": "node scripts/diagnose.js"
+  },
+  "keywords": [
+    "air-quality",
+    "smog",
+    "genai",
+    "gemini",
+    "sustainability",
+    "accessibility"
+  ],
+  "license": "MIT",
+  "dependencies": {}
+}
