@@ -317,4 +317,4 @@ if (require.main === module) {
   process.on('SIGINT', shutdown);
 }
 
-module.exports = { createApp };
+module.exports = { createApp, SECURITY_HEADERS };
