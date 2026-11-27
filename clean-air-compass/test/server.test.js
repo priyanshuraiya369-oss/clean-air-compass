@@ -11,9 +11,13 @@ function fakeFetch({ aqi = 185, fail = false } = {}) {
     if (fail) throw new Error('network down');
     const u = String(url);
     if (u.includes('geocoding-api')) {
-      return { ok: true, json: async () => (u.includes('Nowhereville')
-        ? { results: [] }
-        : { results: [{ name: 'Delhi', admin1: 'Delhi', country: 'India', latitude: 28.6, longitude: 77.2 }] }) };
+      return {
+        ok: true,
+        json: async () =>
+          u.includes('Nowhereville')
+            ? { results: [] }
+            : { results: [{ name: 'Delhi', admin1: 'Delhi', country: 'India', latitude: 28.6, longitude: 77.2 }] },
+      };
     }
     if (u.includes('nominatim') && u.includes('/reverse')) {
       return { ok: true, json: async () => ({ address: { city: 'Jaipur', state: 'Rajasthan' } }) };
@@ -46,7 +50,11 @@ async function withServer(opts, fn) {
 }
 
 const post = (base, path, body, headers = {}) =>
-  fetch(base + path, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: typeof body === 'string' ? body : JSON.stringify(body) });
+  fetch(base + path, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', ...headers },
+    body: typeof body === 'string' ? body : JSON.stringify(body),
+  });
 
 test('serves the app with strict security headers', async () => {
   await withServer({ fetchImpl: fakeFetch() }, async (base) => {
@@ -141,7 +149,10 @@ test('validation, content-type and size limits are enforced', async () => {
     assert.equal((await post(base, '/api/plan', { city: 'Delhi', commute: 'rocket' })).status, 400);
     assert.equal((await post(base, '/api/plan', '{not json')).status, 400);
     assert.equal((await post(base, '/api/plan', '{}', { 'content-type': 'text/plain' })).status, 415);
-    const big = await post(base, '/api/plan', { city: 'Delhi', notes: 'x'.repeat(40000) }).catch((e) => ({ status: 0, e }));
+    const big = await post(base, '/api/plan', { city: 'Delhi', notes: 'x'.repeat(40000) }).catch((e) => ({
+      status: 0,
+      e,
+    }));
     assert.ok([413, 0].includes(big.status));
     assert.equal((await fetch(base + '/api/plan')).status, 405);
     assert.equal((await fetch(base + '/api/unknown')).status, 404);
@@ -150,7 +161,10 @@ test('validation, content-type and size limits are enforced', async () => {
 
 test('POST /api/ask answers offline using the rules fallback', async () => {
   await withServer({ fetchImpl: fakeFetch() }, async (base) => {
-    const res = await post(base, '/api/ask', { question: 'Should my child wear a mask?', context: { aqi: 200, city: 'Delhi' } });
+    const res = await post(base, '/api/ask', {
+      question: 'Should my child wear a mask?',
+      context: { aqi: 200, city: 'Delhi' },
+    });
     assert.equal(res.status, 200);
     const body = await res.json();
     assert.equal(body.source, 'rules');
@@ -165,7 +179,15 @@ const aiPlanBody = JSON.stringify({
   localInsights: ['Local note'],
   sections: ['routine', 'indoor', 'sustainable'].map((id) => ({
     id,
-    items: [1, 2, 3].map((n) => ({ title: `T${n}`, action: `A${n}`, why: `W${n}`, impact: `I${n}`, when: 'today', cost: 'free', exposure: 'high' })),
+    items: [1, 2, 3].map((n) => ({
+      title: `T${n}`,
+      action: `A${n}`,
+      why: `W${n}`,
+      impact: `I${n}`,
+      when: 'today',
+      cost: 'free',
+      exposure: 'high',
+    })),
   })),
 });
 
@@ -185,7 +207,10 @@ test('Gemini authors the plan when a key is configured, with safety items still 
     assert.equal(body.plan.headline, 'AI headline');
     assert.equal(body.plan.sections[0].items[0].by, 'gemini');
     assert.deepEqual(body.plan.localInsights, ['Local note']);
-    assert.ok(body.plan.safety.some((i) => i.id === 'wear-n95'), 'rules-based safety block is kept');
+    assert.ok(
+      body.plan.safety.some((i) => i.id === 'wear-n95'),
+      'rules-based safety block is kept',
+    );
   });
 });
 
@@ -206,10 +231,20 @@ test('if Gemini fails the rules plan is returned instead of an error', async () 
 });
 
 test('GEMINI_MODEL and GEMINI_FALLBACK_MODELS configure the model chain', async () => {
-  await withServer({ fetchImpl: fakeFetch(), env: { GEMINI_API_KEY: 'k', GEMINI_MODEL: 'gemini-3.6-flash', GEMINI_FALLBACK_MODELS: 'gemini-2.5-flash, bad model!' } }, async (base) => {
-    const body = await (await fetch(base + '/api/health')).json();
-    assert.deepEqual(body.models, ['gemini-3.6-flash', 'gemini-2.5-flash']);
-  });
+  await withServer(
+    {
+      fetchImpl: fakeFetch(),
+      env: {
+        GEMINI_API_KEY: 'k',
+        GEMINI_MODEL: 'gemini-3.6-flash',
+        GEMINI_FALLBACK_MODELS: 'gemini-2.5-flash, bad model!',
+      },
+    },
+    async (base) => {
+      const body = await (await fetch(base + '/api/health')).json();
+      assert.deepEqual(body.models, ['gemini-3.6-flash', 'gemini-2.5-flash']);
+    },
+  );
 });
 
 test('rate limiting returns 429 with Retry-After', async () => {
@@ -241,7 +276,9 @@ test('reverse lookup failure still returns 200 with a null name', async () => {
 
 test('plan works with coordinates and keeps the supplied place name', async () => {
   await withServer({ fetchImpl: fakeFetch() }, async (base) => {
-    const body = await (await post(base, '/api/plan', { city: 'Jaipur, Rajasthan', lat: 26.9124, lon: 75.7873 })).json();
+    const body = await (
+      await post(base, '/api/plan', { city: 'Jaipur, Rajasthan', lat: 26.9124, lon: 75.7873 })
+    ).json();
     assert.equal(body.plan.air.city, 'Jaipur, Rajasthan');
     assert.equal(body.plan.air.aqi, 185);
   });
@@ -284,9 +321,18 @@ test('translated safety items keep structure and expose the English original', a
       const prompt = JSON.parse(init.body).contents[0].parts[0].text;
       const ids = [...prompt.matchAll(/"id":"([a-z0-9-]+)","title"/g)].map((m) => m[1]);
       const body = JSON.parse(aiPlanBody);
-      body.safetyTranslations = ids.map((id) => ({ id, title: 'HI title', action: 'HI action', why: 'HI why', impact: 'HI impact' }));
+      body.safetyTranslations = ids.map((id) => ({
+        id,
+        title: 'HI title',
+        action: 'HI action',
+        why: 'HI why',
+        impact: 'HI impact',
+      }));
       body.disclaimer = 'HI disclaimer';
-      return { ok: true, json: async () => ({ candidates: [{ content: { parts: [{ text: JSON.stringify(body) }] } }] }) };
+      return {
+        ok: true,
+        json: async () => ({ candidates: [{ content: { parts: [{ text: JSON.stringify(body) }] } }] }),
+      };
     }
     return f(url, init);
   };
@@ -312,9 +358,16 @@ test('hourly forecast reaches the plan when Open-Meteo returns it', async () => 
   }
   const wrapped = async (url) => {
     const u = String(url);
-    if (u.includes('geocoding-api')) return { ok: true, json: async () => ({ results: [{ name: 'Delhi', latitude: 28.6, longitude: 77.2 }] }) };
+    if (u.includes('geocoding-api'))
+      return { ok: true, json: async () => ({ results: [{ name: 'Delhi', latitude: 28.6, longitude: 77.2 }] }) };
     if (u.includes('air-quality-api')) {
-      return { ok: true, json: async () => ({ current: { time: '2026-11-24T08:00', us_aqi: 170, pm2_5: 80, pm10: 120 }, hourly: { time: times, us_aqi: vals } }) };
+      return {
+        ok: true,
+        json: async () => ({
+          current: { time: '2026-11-24T08:00', us_aqi: 170, pm2_5: 80, pm10: 120 },
+          hourly: { time: times, us_aqi: vals },
+        }),
+      };
     }
     return { ok: false, status: 404 };
   };
@@ -329,7 +382,13 @@ test('hourly forecast reaches the plan when Open-Meteo returns it', async () => 
 
 test('all front-end assets are served with correct types', async () => {
   await withServer({ fetchImpl: fakeFetch() }, async (base) => {
-    for (const [file, type] of [['/tools.js', /javascript/], ['/theme.js', /javascript/], ['/styles.css', /css/], ['/js/app.mjs?v=5', /javascript/], ['/js/dom.mjs', /javascript/]]) {
+    for (const [file, type] of [
+      ['/tools.js', /javascript/],
+      ['/theme.js', /javascript/],
+      ['/styles.css', /css/],
+      ['/js/app.mjs?v=5', /javascript/],
+      ['/js/dom.mjs', /javascript/],
+    ]) {
       const res = await fetch(base + file);
       assert.equal(res.status, 200, file);
       assert.match(res.headers.get('content-type'), type);

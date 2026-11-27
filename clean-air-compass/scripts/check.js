@@ -20,7 +20,9 @@ function collect(dir, out = []) {
 }
 
 const files = collect(ROOT);
-const failures = files.filter((file) => spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' }).status !== 0);
+const failures = files.filter(
+  (file) => spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' }).status !== 0,
+);
 for (const file of failures) console.error(`Syntax error in ${path.relative(ROOT, file)}`);
 console.log(`Checked ${files.length} files, ${failures.length} with errors.`);
 process.exitCode = failures.length ? 1 : 0;

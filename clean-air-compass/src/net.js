@@ -26,7 +26,11 @@ function viaPublicDns(url, init = {}) {
     const lookup = (hostname, options, callback) => {
       resolver.resolve4(hostname, (err, addresses) => {
         if (err) return callback(err);
-        if (options && options.all) return callback(null, addresses.map((address) => ({ address, family: 4 })));
+        if (options && options.all)
+          return callback(
+            null,
+            addresses.map((address) => ({ address, family: 4 })),
+          );
         return callback(null, addresses[0], 4);
       });
     };
@@ -75,7 +79,8 @@ function createResilientFetch({ primary = globalThis.fetch, fallback = viaPublic
     try {
       return await primary(url, { ...init, signal: controller.signal });
     } catch (err) {
-      const primaryTimedOut = controller.signal.aborted && controller.signal.reason && controller.signal.reason.name === 'PrimaryTimeout';
+      const primaryTimedOut =
+        controller.signal.aborted && controller.signal.reason && controller.signal.reason.name === 'PrimaryTimeout';
       if (callerSignal && callerSignal.aborted) throw err;
       if (!(primaryTimedOut || isNetworkFailure(err))) throw err;
       return fallback(url, { ...init, signal: callerSignal });

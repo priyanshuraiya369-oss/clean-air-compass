@@ -191,7 +191,12 @@
   }
 
   function planToText(plan) {
-    const lines = [`Clean Air Compass plan for ${plan.air.city}`, `AQI ${plan.air.aqi} (${plan.air.label})`, plan.headline, ''];
+    const lines = [
+      `Clean Air Compass plan for ${plan.air.city}`,
+      `AQI ${plan.air.aqi} (${plan.air.label})`,
+      plan.headline,
+      '',
+    ];
     for (const s of plan.sections) {
       lines.push(s.title.toUpperCase());
       for (const i of s.items) lines.push(`- ${i.title}: ${i.action} Impact: ${i.impact.text}`);

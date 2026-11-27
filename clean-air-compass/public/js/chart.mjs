@@ -9,7 +9,9 @@ const PAD = { left: 36, right: 8, top: 22, bottom: 28 };
 function summaryText(forecast) {
   const { best, worst } = forecast;
   const worstText = `Worst: ${worst.day} ${worst.from} to ${worst.to} (AQI around ${worst.aqi}).`;
-  return best ? `Best time outside ${best.day}: ${best.from} to ${best.to} (AQI around ${best.aqi}). ${worstText}` : worstText;
+  return best
+    ? `Best time outside ${best.day}: ${best.from} to ${best.to} (AQI around ${best.aqi}). ${worstText}`
+    : worstText;
 }
 
 /** Index of the first hour of the "best" window within the hourly series, or -1. */
@@ -17,7 +19,9 @@ export function bestIndex(hours, best) {
   if (!best) return -1;
   const firstDay = hours[0].t.slice(0, 10);
   return hours.findIndex(
-    (x) => x.t.slice(11, 16) === best.from && (best.day === 'today' ? x.t.slice(0, 10) === firstDay : x.t.slice(0, 10) !== firstDay),
+    (x) =>
+      x.t.slice(11, 16) === best.from &&
+      (best.day === 'today' ? x.t.slice(0, 10) === firstDay : x.t.slice(0, 10) !== firstDay),
   );
 }
 
@@ -29,7 +33,9 @@ function buildSvg(hours, forecast) {
   const level = tools().levelOf;
 
   const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-labelledby': 'chart-title chart-desc' });
-  svg.append(s('desc', { id: 'chart-desc', text: `Bar chart of hourly US AQI for the next 24 hours. ${summaryText(forecast)}` }));
+  svg.append(
+    s('desc', { id: 'chart-desc', text: `Bar chart of hourly US AQI for the next 24 hours. ${summaryText(forecast)}` }),
+  );
 
   for (let v = 0; v <= top; v += 50) {
     svg.append(
@@ -50,13 +56,28 @@ function buildSvg(hours, forecast) {
   hours.forEach((hour, i) => {
     const bar = s(
       'rect',
-      { class: `bar lvl-${level(hour.aqi)}`, x: PAD.left + i * bw + 2, y: y(hour.aqi), width: bw - 4, height: Math.max(2, y(0) - y(hour.aqi)), rx: 3 },
+      {
+        class: `bar lvl-${level(hour.aqi)}`,
+        x: PAD.left + i * bw + 2,
+        y: y(hour.aqi),
+        width: bw - 4,
+        height: Math.max(2, y(0) - y(hour.aqi)),
+        rx: 3,
+      },
       s('title', { text: `${hour.t.slice(11, 16)}: AQI ${hour.aqi}` }),
     );
     bar.style.setProperty('--i', String(i));
     svg.append(bar);
     if (i % 3 === 0) {
-      svg.append(s('text', { class: 'axis', x: PAD.left + i * bw + bw / 2, y: H - 8, 'text-anchor': 'middle', text: hour.t.slice(11, 13) }));
+      svg.append(
+        s('text', {
+          class: 'axis',
+          x: PAD.left + i * bw + bw / 2,
+          y: H - 8,
+          'text-anchor': 'middle',
+          text: hour.t.slice(11, 13),
+        }),
+      );
     }
   });
   return svg;
@@ -68,11 +89,27 @@ function buildTable(hours) {
     'table',
     {},
     h('caption', { class: 'help', text: 'Hourly US AQI for the next 24 hours (local time)' }),
-    h('thead', {}, h('tr', {}, ['Hour', 'AQI', 'Category'].map((name) => h('th', { scope: 'col', text: name })))),
+    h(
+      'thead',
+      {},
+      h(
+        'tr',
+        {},
+        ['Hour', 'AQI', 'Category'].map((name) => h('th', { scope: 'col', text: name })),
+      ),
+    ),
     h(
       'tbody',
       {},
-      hours.map((hour) => h('tr', {}, h('td', { text: hour.t.slice(11, 16) }), h('td', { text: String(hour.aqi) }), h('td', { text: LEVEL_NAMES[level(hour.aqi)] }))),
+      hours.map((hour) =>
+        h(
+          'tr',
+          {},
+          h('td', { text: hour.t.slice(11, 16) }),
+          h('td', { text: String(hour.aqi) }),
+          h('td', { text: LEVEL_NAMES[level(hour.aqi)] }),
+        ),
+      ),
     ),
   );
 }

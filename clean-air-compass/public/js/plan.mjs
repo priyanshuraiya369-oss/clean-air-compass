@@ -7,7 +7,17 @@ import { renderItem, renderSection } from './items.mjs';
 import { loadDone, updateProgress } from './checklist.mjs';
 import { observeReveal } from './reveal.mjs';
 
-const REVEAL_IDS = ['overview', 'headline', 'summary', 'chart-card', 'ai-box', 'safety', 'progress-card', 'myths-card', 'ask-section'];
+const REVEAL_IDS = [
+  'overview',
+  'headline',
+  'summary',
+  'chart-card',
+  'ai-box',
+  'safety',
+  'progress-card',
+  'myths-card',
+  'ask-section',
+];
 
 function renderAiBox(plan, ai) {
   const box = $('ai-box');
@@ -18,7 +28,14 @@ function renderAiBox(plan, ai) {
       h('p', { class: 'help', text: `Model: ${ai.model}. CO2 figures are calculated by the app, not by the AI.` }),
     );
     if (plan.localInsights && plan.localInsights.length) {
-      box.append(h('p', { class: 'label', text: 'Local considerations' }), h('ul', {}, plan.localInsights.map((t) => h('li', { text: t }))));
+      box.append(
+        h('p', { class: 'label', text: 'Local considerations' }),
+        h(
+          'ul',
+          {},
+          plan.localInsights.map((t) => h('li', { text: t })),
+        ),
+      );
     }
   } else {
     const message =

@@ -30,7 +30,9 @@ test('TtlCache expires entries and evicts when full', () => {
   assert.equal(c.get('a'), 1);
   t = 101;
   assert.equal(c.get('a'), undefined);
-  c.set('x', 1); c.set('y', 2); c.set('z', 3);
+  c.set('x', 1);
+  c.set('y', 2);
+  c.set('z', 3);
   assert.equal(c.get('x'), undefined);
   assert.equal(c.get('z'), 3);
 });

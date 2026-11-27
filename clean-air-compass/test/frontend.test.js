@@ -24,7 +24,10 @@ test('gaugeAngle gives every AQI band an equal 30 degree arc', () => {
 });
 
 test('levelOf matches the AQI categories', () => {
-  assert.deepEqual([0, 50, 51, 100, 150, 151, 200, 201, 300, 301, 500].map(Tools.levelOf), [0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5]);
+  assert.deepEqual(
+    [0, 50, 51, 100, 150, 151, 200, 201, 300, 301, 500].map(Tools.levelOf),
+    [0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5],
+  );
 });
 
 test('purifierSizing uses 4.8 air changes per hour and validates input', () => {
@@ -72,7 +75,7 @@ test('front-end code never uses innerHTML, eval or document.write', () => {
 test('reduced-motion and dark-theme support are present in the stylesheet', () => {
   const css = read('styles.css');
   assert.match(css, /prefers-reduced-motion: reduce/);
-  assert.match(css, /\[data-theme="dark"\]/);
+  assert.match(css, /\[data-theme=(?:"dark"|'dark')\]/);
   assert.match(css, /@media print/);
 });
 
@@ -81,9 +84,14 @@ test('every named import in the front-end modules is exported by its source modu
     const src = read(`js/${file}`);
     for (const m of src.matchAll(/import\s*\{([^}]+)\}\s*from\s*'\.\/([\w.-]+)'/g)) {
       const target = read(`js/${m[2]}`);
-      for (const name of m[1].split(',').map((n) => n.trim()).filter(Boolean)) {
+      for (const name of m[1]
+        .split(',')
+        .map((n) => n.trim())
+        .filter(Boolean)) {
         const escaped = name.replace(/[$]/g, '\\$&');
-        const exported = new RegExp(`export\\s+(?:async\\s+)?(?:function|const|let|class)\\s+${escaped}(?![\\w$])`).test(target);
+        const exported = new RegExp(
+          `export\\s+(?:async\\s+)?(?:function|const|let|class)\\s+${escaped}(?![\\w$])`,
+        ).test(target);
         assert.ok(exported, `${file} imports ${name} which ${m[2]} does not export`);
       }
     }

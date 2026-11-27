@@ -26,14 +26,20 @@ test('applyAiToPlan swaps sections but never removes or reorders safety items', 
   const plan = freshPlan();
   const before = plan.safety.map((i) => i.id);
   const ai = {
-    headline: 'H', summary: 'S', disclaimer: 'D', localInsights: ['L'],
+    headline: 'H',
+    summary: 'S',
+    disclaimer: 'D',
+    localInsights: ['L'],
     sections: [{ id: 'routine', title: 'R', items: [] }],
     safetyTranslations: { [before[0]]: { title: 'T', action: 'A', why: 'W', impact: 'I' } },
   };
   applyAiToPlan(plan, ai, 'hi');
   assert.equal(plan.generatedBy, 'gemini');
   assert.equal(plan.headline, 'H');
-  assert.deepEqual(plan.safety.map((i) => i.id), before);
+  assert.deepEqual(
+    plan.safety.map((i) => i.id),
+    before,
+  );
   assert.equal(plan.safety[0].title, 'T');
   assert.ok(plan.safety[0].en.title);
   assert.ok(plan.safety.slice(1).every((i) => !i.en));
@@ -41,7 +47,12 @@ test('applyAiToPlan swaps sections but never removes or reorders safety items', 
 });
 
 test('readConfig sanitises models, token and proxy hops', () => {
-  const c = readConfig({ GEMINI_API_KEY: 'k', GEMINI_MODEL: 'gemini-x', GEMINI_FALLBACK_MODELS: 'ok-1, bad name!, ../etc', TRUST_PROXY_HOPS: '2' });
+  const c = readConfig({
+    GEMINI_API_KEY: 'k',
+    GEMINI_MODEL: 'gemini-x',
+    GEMINI_FALLBACK_MODELS: 'ok-1, bad name!, ../etc',
+    TRUST_PROXY_HOPS: '2',
+  });
   assert.deepEqual(c.models, ['gemini-x', 'ok-1']);
   assert.equal(c.trustedHops, 2);
   assert.equal(readConfig({}).models.length >= 1, true);
@@ -79,7 +90,10 @@ test('loadStaticFiles walks sub-folders and ignores unknown file types', () => {
 
 test('byUrgency orders today before this-week before long-term', () => {
   const items = [{ when: 'long-term' }, { when: 'today' }, { when: 'this-week' }];
-  assert.deepEqual(items.sort(byUrgency).map((i) => i.when), ['today', 'this-week', 'long-term']);
+  assert.deepEqual(
+    items.sort(byUrgency).map((i) => i.when),
+    ['today', 'this-week', 'long-term'],
+  );
   assert.equal(Object.keys(WHEN_ORDER).length, 3);
 });
 

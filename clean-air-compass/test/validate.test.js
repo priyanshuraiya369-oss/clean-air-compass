@@ -30,7 +30,7 @@ test('rejects unknown enum values and out-of-range numbers', () => {
 
 test('rejects suspicious characters in city names', () => {
   assert.equal(validateProfile({ city: '<script>alert(1)</script>' }).ok, false);
-  assert.equal(validateProfile({ city: "São Paulo" }).ok, true);
+  assert.equal(validateProfile({ city: 'São Paulo' }).ok, true);
   assert.equal(validateProfile({ city: 'दिल्ली' }).ok, true);
 });
 

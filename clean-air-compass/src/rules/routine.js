@@ -39,7 +39,10 @@ function routineItems(p, level, sensitive) {
         'Wear a well-fitted N95 / FFP2 mask outdoors',
         'Choose a respirator that seals around nose and cheeks. Cloth and loose surgical masks do not stop fine particles well.',
         'PM2.5 is small enough to reach deep into the lungs; certified N95/FFP2 filters at least 95% of particles when fitted properly.',
-        { text: 'Can cut the fine particles you breathe in while outside by up to ~90% with a good seal.', exposure: 'high' },
+        {
+          text: 'Can cut the fine particles you breathe in while outside by up to ~90% with a good seal.',
+          exposure: 'high',
+        },
         'today',
         'low',
       ),

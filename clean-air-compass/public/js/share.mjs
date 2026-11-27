@@ -8,7 +8,12 @@ function todayActions(plan) {
 
 /** Short message for WhatsApp or the share sheet. */
 export function shareText(plan, origin) {
-  const lines = [`Clean Air Compass | ${plan.air.city}: AQI ${plan.air.aqi} (${plan.air.label})`, plan.headline, '', 'Do today:'];
+  const lines = [
+    `Clean Air Compass | ${plan.air.city}: AQI ${plan.air.aqi} (${plan.air.label})`,
+    plan.headline,
+    '',
+    'Do today:',
+  ];
   todayActions(plan).forEach((item) => lines.push(`- ${item.title}`));
   lines.push('', `Get a plan for your family: ${origin}`);
   return lines.join('\n');
@@ -16,7 +21,13 @@ export function shareText(plan, origin) {
 
 /** The whole plan as plain text for copying. */
 export function planToText(plan) {
-  const lines = [`Clean Air Compass plan for ${plan.air.city}`, `AQI ${plan.air.aqi} (${plan.air.label})`, plan.headline, '', 'SAFETY ESSENTIALS'];
+  const lines = [
+    `Clean Air Compass plan for ${plan.air.city}`,
+    `AQI ${plan.air.aqi} (${plan.air.label})`,
+    plan.headline,
+    '',
+    'SAFETY ESSENTIALS',
+  ];
   for (const item of plan.safety || []) lines.push(`- ${item.title}: ${item.action}`);
   lines.push('');
   for (const section of plan.sections) {

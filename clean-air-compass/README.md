@@ -7,14 +7,14 @@ Built for PromptWars Virtual, Challenge 6: Urban Air Quality Assistant.
 
 ## Highlights
 
-* **Live data:** city search or device location, real-time US AQI and PM2.5 via Open-Meteo (no API key). Manual AQI fallback works offline.
-* **Truly personalised:** children, elders, sensitive members, commute mode and distance, cooking fuel, heating, home type, budget, existing purifier, free-text notes.
-* **Explains impact:** each action shows *why it matters* and *your impact* (kg CO2e per month where computable, plus an exposure-reduction rating).
-* **Hybrid AI:** a deterministic rules engine guarantees safe advice; Gemini adds a personalised summary, extra tips and free-form Q&A. If AI is unavailable, the app still works fully.
-* **Zero runtime dependencies** (Node.js built-ins only): tiny, fast and nothing to compromise.
-* **Secure by design:** strict validation, CSP without inline code, rate limiting, secrets server-side only. See [SECURITY.md](SECURITY.md).
-* **Accessible:** WCAG-oriented, keyboard and screen-reader friendly, dark mode, reduced motion, print. See [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md).
-* **Tested:** automated unit and HTTP integration tests with mocked upstreams, run in CI.
+- **Live data:** city search or device location, real-time US AQI and PM2.5 via Open-Meteo (no API key). Manual AQI fallback works offline.
+- **Truly personalised:** children, elders, sensitive members, commute mode and distance, cooking fuel, heating, home type, budget, existing purifier, free-text notes.
+- **Explains impact:** each action shows _why it matters_ and _your impact_ (kg CO2e per month where computable, plus an exposure-reduction rating).
+- **Hybrid AI:** a deterministic rules engine guarantees safe advice; Gemini adds a personalised summary, extra tips and free-form Q&A. If AI is unavailable, the app still works fully.
+- **Zero runtime dependencies** (Node.js built-ins only): tiny, fast and nothing to compromise.
+- **Secure by design:** strict validation, CSP without inline code, rate limiting, secrets server-side only. See [SECURITY.md](SECURITY.md).
+- **Accessible:** WCAG-oriented, keyboard and screen-reader friendly, dark mode, reduced motion, print. See [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md).
+- **Tested:** automated unit and HTTP integration tests with mocked upstreams, run in CI.
 
 ## Quick start
 
@@ -40,12 +40,12 @@ npm run lint
 
 ## Configuration
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `GEMINI_API_KEY` | none | Enables Gemini enrichment and Q&A. Optional. |
-| `GEMINI_MODEL` | `gemini-2.5-flash` | Model name. |
-| `PORT` | `8080` | HTTP port. |
-| `TRUST_PROXY_HOPS` | `0` | Trusted reverse-proxy hops for client-IP rate limiting (Cloud Run: `1`). |
+| Variable           | Default            | Purpose                                                                  |
+| ------------------ | ------------------ | ------------------------------------------------------------------------ |
+| `GEMINI_API_KEY`   | none               | Enables Gemini enrichment and Q&A. Optional.                             |
+| `GEMINI_MODEL`     | `gemini-2.5-flash` | Model name.                                                              |
+| `PORT`             | `8080`             | HTTP port.                                                               |
+| `TRUST_PROXY_HOPS` | `0`                | Trusted reverse-proxy hops for client-IP rate limiting (Cloud Run: `1`). |
 
 ## Deploy to Google Cloud Run
 
@@ -53,15 +53,16 @@ npm run lint
 gcloud run deploy clean-air-compass --source . --region asia-south1 \
   --allow-unauthenticated --set-env-vars GEMINI_API_KEY=your-key
 ```
+
 (Use Secret Manager for the key in production.)
 
 ## API
 
-| Endpoint | Body | Returns |
-|----------|------|---------|
-| `GET /api/health` | none | `{status, ai}` |
-| `POST /api/plan` | profile JSON (`city` or `lat`+`lon` or `manualAqi`, plus lifestyle fields) | `{plan, enhancement, ai}` |
-| `POST /api/ask` | `{question, context:{city, aqi}}` | `{answer, source}` |
+| Endpoint          | Body                                                                       | Returns                   |
+| ----------------- | -------------------------------------------------------------------------- | ------------------------- |
+| `GET /api/health` | none                                                                       | `{status, ai}`            |
+| `POST /api/plan`  | profile JSON (`city` or `lat`+`lon` or `manualAqi`, plus lifestyle fields) | `{plan, enhancement, ai}` |
+| `POST /api/ask`   | `{question, context:{city, aqi}}`                                          | `{answer, source}`        |
 
 ## Project structure
 
@@ -77,14 +78,14 @@ docs/                 Architecture and accessibility notes
 
 ## Evaluation criteria mapping
 
-| Criterion | How it is addressed |
-|-----------|---------------------|
-| Code quality | Small single-purpose modules, JSDoc, no dependencies, consistent style, CI |
-| Security | See [SECURITY.md](SECURITY.md) |
-| Efficiency | Pre-compressed static files, ETags, TTL caches, bounded memory, no framework |
-| Testing | Unit and integration coverage for validation, rules, impact maths, limiter, AI fallback, HTTP and security headers |
-| Accessibility | See [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md) |
-| Problem alignment | See coverage table in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| Criterion         | How it is addressed                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Code quality      | Small single-purpose modules, JSDoc, no dependencies, consistent style, CI                                         |
+| Security          | See [SECURITY.md](SECURITY.md)                                                                                     |
+| Efficiency        | Pre-compressed static files, ETags, TTL caches, bounded memory, no framework                                       |
+| Testing           | Unit and integration coverage for validation, rules, impact maths, limiter, AI fallback, HTTP and security headers |
+| Accessibility     | See [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md)                                                                 |
+| Problem alignment | See coverage table in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                                                 |
 
 ## Disclaimer
 

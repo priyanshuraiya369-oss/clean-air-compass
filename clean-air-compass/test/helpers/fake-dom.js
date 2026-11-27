@@ -8,8 +8,13 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 class FakeText {
-  constructor(data) { this.data = String(data); this.parent = null; }
-  get textContent() { return this.data; }
+  constructor(data) {
+    this.data = String(data);
+    this.parent = null;
+  }
+  get textContent() {
+    return this.data;
+  }
 }
 
 class FakeElement {
@@ -26,7 +31,14 @@ class FakeElement {
     this.disabled = false;
     this.value = '';
     const props = {};
-    this.style = { props, setProperty: (k, v) => { props[k] = v; }, strokeDashoffset: '', transform: '' };
+    this.style = {
+      props,
+      setProperty: (k, v) => {
+        props[k] = v;
+      },
+      strokeDashoffset: '',
+      transform: '',
+    };
     const self = this;
     this.classList = {
       add: (c) => self.classes.add(c),
@@ -34,14 +46,21 @@ class FakeElement {
       contains: (c) => self.classes.has(c),
       toggle: (c, force) => {
         const on = force === undefined ? !self.classes.has(c) : Boolean(force);
-        if (on) self.classes.add(c); else self.classes.delete(c);
+        if (on) self.classes.add(c);
+        else self.classes.delete(c);
         return on;
       },
     };
   }
 
-  get firstChild() { return this.children[0] || null; }
-  removeChild(child) { this.children.splice(this.children.indexOf(child), 1); child.parent = null; return child; }
+  get firstChild() {
+    return this.children[0] || null;
+  }
+  removeChild(child) {
+    this.children.splice(this.children.indexOf(child), 1);
+    child.parent = null;
+    return child;
+  }
   append(...nodes) {
     for (const n of nodes) {
       const node = typeof n === 'string' ? new FakeText(n) : n;
@@ -55,17 +74,32 @@ class FakeElement {
     if (key === 'checked') this.checked = true;
     if (key === 'class') this.classes = new Set(String(value).split(/\s+/).filter(Boolean));
   }
-  getAttribute(key) { return key in this.attrs ? this.attrs[key] : null; }
-  removeAttribute(key) { delete this.attrs[key]; }
+  getAttribute(key) {
+    return key in this.attrs ? this.attrs[key] : null;
+  }
+  removeAttribute(key) {
+    delete this.attrs[key];
+  }
 
-  set textContent(text) { this.children = []; if (text !== '') this.children.push(new FakeText(text)); }
-  get textContent() { return this.children.map((c) => c.textContent).join(''); }
+  set textContent(text) {
+    this.children = [];
+    if (text !== '') this.children.push(new FakeText(text));
+  }
+  get textContent() {
+    return this.children.map((c) => c.textContent).join('');
+  }
 
-  addEventListener(type, fn) { (this.listeners[type] = this.listeners[type] || []).push(fn); }
-  fire(type, event = {}) { (this.listeners[type] || []).forEach((fn) => fn(event)); }
+  addEventListener(type, fn) {
+    (this.listeners[type] = this.listeners[type] || []).push(fn);
+  }
+  fire(type, event = {}) {
+    (this.listeners[type] || []).forEach((fn) => fn(event));
+  }
   focus() {}
   scrollIntoView() {}
-  closest() { return this; }
+  closest() {
+    return this;
+  }
 }
 
 /** Collect every descendant element matching `predicate`. */
@@ -101,7 +135,10 @@ function installFakeDom({ reducedMotion = true } = {}) {
   };
   const fakeWindow = {
     matchMedia: () => ({ matches: reducedMotion }),
-    localStorage: { getItem: (k) => (memory.has(k) ? memory.get(k) : null), setItem: (k, v) => memory.set(k, String(v)) },
+    localStorage: {
+      getItem: (k) => (memory.has(k) ? memory.get(k) : null),
+      setItem: (k, v) => memory.set(k, String(v)),
+    },
     CleanAirTools: require('../../public/tools.js'),
     location: { origin: 'http://localhost' },
   };

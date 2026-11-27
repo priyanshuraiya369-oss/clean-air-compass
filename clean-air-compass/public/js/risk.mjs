@@ -11,7 +11,12 @@ export function renderGroupRisk(groups) {
       h(
         'li',
         { class: 'risk-row' },
-        h('div', { class: 'risk-head' }, h('span', { text: group.label }), h('span', { class: 'risk-level', text: group.riskLabel })),
+        h(
+          'div',
+          { class: 'risk-head' },
+          h('span', { text: group.label }),
+          h('span', { class: 'risk-level', text: group.riskLabel }),
+        ),
         h('div', { class: 'meter', role: 'img', 'aria-label': `${group.label}: ${group.riskLabel} risk` }, fill),
       ),
     );

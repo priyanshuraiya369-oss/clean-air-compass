@@ -10,7 +10,7 @@ function sustainableItems(p) {
 
   if (p.commute === 'car' || p.commute === 'two_wheeler') {
     const best = commuteSavingKg(p.commute, 'public', km);
-    const half = Math.round(commuteSavingKg(p.commute, 'public', km) / 2 * 10) / 10;
+    const half = Math.round((commuteSavingKg(p.commute, 'public', km) / 2) * 10) / 10;
     items.push(
       item(
         'commute-swap',
@@ -108,7 +108,11 @@ function sustainableItems(p) {
         'Heat the person, not the room',
         'Use a timer or thermostat, wear layers, insulate windows, and run the heater one hour less a day.',
         'Electric heaters are clean at home but draw a lot of power; layers and insulation cut the load.',
-        { text: `One hour less of a 1.5 kW heater saves about ${saved} kg CO2e a month on an average grid.`, co2: saved, exposure: null },
+        {
+          text: `One hour less of a 1.5 kW heater saves about ${saved} kg CO2e a month on an average grid.`,
+          co2: saved,
+          exposure: null,
+        },
         'this-week',
         'low',
       ),
@@ -122,7 +126,11 @@ function sustainableItems(p) {
         'Look into rooftop solar',
         'Ask your electricity distributor about net-metering and subsidy schemes, and get at least two quotes.',
         'Solar replaces grid electricity, much of which still comes from burning coal.',
-        { text: 'A typical household system can offset much of its yearly electricity emissions.', co2: null, exposure: null },
+        {
+          text: 'A typical household system can offset much of its yearly electricity emissions.',
+          co2: null,
+          exposure: null,
+        },
         'long-term',
         'high',
       ),
@@ -135,7 +143,11 @@ function sustainableItems(p) {
       'Start a small community action',
       'Share the AQI with neighbours, set up a school walking bus, ask your housing society to ban waste burning, and plant native trees in winter.',
       'Smog is a shared problem: neighbourhood habits change the air everyone breathes.',
-      { text: 'Collective action reduces local pollution that no single household can fix alone.', co2: null, exposure: null },
+      {
+        text: 'Collective action reduces local pollution that no single household can fix alone.',
+        co2: null,
+        exposure: null,
+      },
       'long-term',
       'free',
     ),

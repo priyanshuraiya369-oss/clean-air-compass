@@ -9,8 +9,6 @@ const DEFAULT_MODELS = Object.freeze(['gemini-3.5-flash', 'gemini-2.5-flash']);
 const PLAN_TIMEOUT_MS = 35000;
 const ANSWER_TIMEOUT_MS = 20000;
 
-
-
 const SYSTEM_PROMPT = [
   'You are Clean Air Compass, a careful, practical assistant that helps families and communities cope with severe winter smog and urban air pollution.',
   'Write specific, realistic, low-emission advice tailored to the exact household, place, season and air quality in the DATA.',
@@ -33,7 +31,6 @@ function extractText(data) {
   return Array.isArray(parts) ? parts.map((p) => (typeof p.text === 'string' ? p.text : '')).join('') : '';
 }
 
-
 function createGeminiClient({ apiKey, models = DEFAULT_MODELS, fetchImpl = globalThis.fetch, log = () => {} } = {}) {
   const enabled = Boolean(apiKey);
   const chain = (Array.isArray(models) ? models : [models]).filter(Boolean);
@@ -50,7 +47,11 @@ function createGeminiClient({ apiKey, models = DEFAULT_MODELS, fetchImpl = globa
           body: JSON.stringify({
             systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
             contents: [{ role: 'user', parts: [{ text: prompt }] }],
-            generationConfig: { temperature, maxOutputTokens, ...(json ? { responseMimeType: 'application/json' } : {}) },
+            generationConfig: {
+              temperature,
+              maxOutputTokens,
+              ...(json ? { responseMimeType: 'application/json' } : {}),
+            },
           }),
         });
         if (!res.ok) throw new Error(`Gemini ${model} responded with ${res.status}`);
@@ -123,7 +124,12 @@ function createGeminiClient({ apiKey, models = DEFAULT_MODELS, fetchImpl = globa
       `DATA: ${JSON.stringify(data)}`,
     ].join('\n');
     try {
-      const { text, model } = await generate({ prompt, json: true, maxOutputTokens: translate ? 20000 : 8192, timeoutMs: PLAN_TIMEOUT_MS });
+      const { text, model } = await generate({
+        prompt,
+        json: true,
+        maxOutputTokens: translate ? 20000 : 8192,
+        timeoutMs: PLAN_TIMEOUT_MS,
+      });
       const cleaned = sanitizeAiPlan(text, plan.sections, translate ? plan.safety : []);
       return cleaned ? { ...cleaned, model } : null;
     } catch {
@@ -145,7 +151,12 @@ function createGeminiClient({ apiKey, models = DEFAULT_MODELS, fetchImpl = globa
       })}`,
     ].join('\n');
     try {
-      const { text, model } = await generate({ prompt, json: false, maxOutputTokens: 2048, timeoutMs: ANSWER_TIMEOUT_MS });
+      const { text, model } = await generate({
+        prompt,
+        json: false,
+        maxOutputTokens: 2048,
+        timeoutMs: ANSWER_TIMEOUT_MS,
+      });
       const clean = cleanText(text, 1200);
       return clean && !UNSAFE.test(clean) ? { text: clean, model } : null;
     } catch {

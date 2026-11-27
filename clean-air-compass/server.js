@@ -51,7 +51,10 @@ function createApp({ env = process.env, fetchImpl = createResilientFetch(), now 
     }
     const handler = routes[`${req.method} ${pathname}`];
     if (handler) return handler(req, res);
-    throw new HttpError(knownPaths.has(pathname) ? 405 : 404, knownPaths.has(pathname) ? 'Method not allowed.' : 'Not found.');
+    throw new HttpError(
+      knownPaths.has(pathname) ? 405 : 404,
+      knownPaths.has(pathname) ? 'Method not allowed.' : 'Not found.',
+    );
   }
 
   function sendError(res, err) {
@@ -72,7 +75,14 @@ function createApp({ env = process.env, fetchImpl = createResilientFetch(), now 
       sendError(res, err);
     } finally {
       if (!quiet) {
-        console.log(JSON.stringify({ method: req.method, path: String(req.url).split('?')[0], status: res.statusCode, ms: now() - started }));
+        console.log(
+          JSON.stringify({
+            method: req.method,
+            path: String(req.url).split('?')[0],
+            status: res.statusCode,
+            ms: now() - started,
+          }),
+        );
       }
     }
   });

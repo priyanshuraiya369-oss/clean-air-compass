@@ -11,5 +11,12 @@ export const SOURCE_LABEL = {
   'open-meteo': 'Source: Open-Meteo live data',
   waqi: 'Source: aqicn.org nearest monitoring station',
 };
-export const LEVEL_NAMES = ['Good', 'Moderate', 'Unhealthy for sensitive groups', 'Unhealthy', 'Very unhealthy', 'Hazardous'];
+export const LEVEL_NAMES = [
+  'Good',
+  'Moderate',
+  'Unhealthy for sensitive groups',
+  'Unhealthy',
+  'Very unhealthy',
+  'Hazardous',
+];
 export const LEVEL_RANGES = ['0 to 50', '51 to 100', '101 to 150', '151 to 200', '201 to 300', '301 and above'];

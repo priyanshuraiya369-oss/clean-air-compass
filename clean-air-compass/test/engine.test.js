@@ -15,7 +15,10 @@ const ids = (plan) => [...plan.safety, ...plan.sections.flatMap((s) => s.items)]
 
 test('plan has the three required sections, each with impact explanations', () => {
   const plan = buildPlan(profile(), air(180));
-  assert.deepEqual(plan.sections.map((s) => s.id), ['routine', 'indoor', 'sustainable']);
+  assert.deepEqual(
+    plan.sections.map((s) => s.id),
+    ['routine', 'indoor', 'sustainable'],
+  );
   for (const s of plan.sections) {
     assert.ok(s.items.length > 0);
     for (const i of s.items) {
@@ -101,7 +104,10 @@ test('items are sorted today -> this-week -> long-term in every section', () => 
   const plan = buildPlan(profile({ commute: 'car', homeType: 'house' }), air(200));
   for (const s of plan.sections) {
     const ranks = s.items.map((i) => order[i.when]);
-    assert.deepEqual(ranks, [...ranks].sort((a, b) => a - b));
+    assert.deepEqual(
+      ranks,
+      [...ranks].sort((a, b) => a - b),
+    );
   }
 });
 

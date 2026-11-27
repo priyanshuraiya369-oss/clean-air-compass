@@ -24,7 +24,11 @@ function createHandlers({ geo, gemini, warn = () => {} }) {
       let name = profile.city;
       if (!(Number.isFinite(lat) && Number.isFinite(lon))) {
         const place = await geo.geocode(profile.city);
-        if (!place) throw new HttpError(404, `Could not find "${profile.city}". Check the spelling or enter an AQI value manually.`);
+        if (!place)
+          throw new HttpError(
+            404,
+            `Could not find "${profile.city}". Check the spelling or enter an AQI value manually.`,
+          );
         ({ lat, lon } = place);
         name = place.name;
       }

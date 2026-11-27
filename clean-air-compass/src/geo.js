@@ -14,7 +14,6 @@ const AIR_TTL_MS = 10 * 60 * 1000;
 const GEO_TTL_MS = 24 * 60 * 60 * 1000;
 const MAX_CACHE_ENTRIES = 500;
 
-
 /** Keep only characters the app accepts in place names. */
 function safePlaceName(value) {
   return String(value || '')
@@ -23,8 +22,6 @@ function safePlaceName(value) {
     .trim()
     .slice(0, 80);
 }
-
-
 
 /**
  * @param {{fetchImpl?:typeof fetch, now?:()=>number, waqiToken?:string}} [opts]
@@ -60,7 +57,16 @@ function createGeoClient({ fetchImpl = globalThis.fetch, now = Date.now, waqiTok
     const lat = Number(hit.lat);
     const lon = Number(hit.lon);
     if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
-    return { name: safePlaceName(String(hit.display_name || name).split(',').slice(0, 3).join(',')), lat, lon };
+    return {
+      name: safePlaceName(
+        String(hit.display_name || name)
+          .split(',')
+          .slice(0, 3)
+          .join(','),
+      ),
+      lat,
+      lon,
+    };
   }
 
   /** @returns {Promise<{name:string,lat:number,lon:number}|null>} */

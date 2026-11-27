@@ -30,8 +30,7 @@ const HEADLINES = [
  */
 function buildPlan(profile, air) {
   const cat = categorize(air.aqi);
-  const sensitive =
-    profile.household.children || profile.household.elderly || profile.household.sensitive;
+  const sensitive = profile.household.children || profile.household.elderly || profile.household.sensitive;
 
   const sections = [
     { id: 'routine', title: 'Low-emission daily routine', items: routineItems(profile, cat.level, sensitive) },

@@ -12,7 +12,12 @@ export function initToolbox() {
   const legend = $('legend');
   LEVEL_NAMES.forEach((name, i) => {
     legend.append(
-      h('li', {}, h('span', { class: `swatch sw-${i}`, 'aria-hidden': 'true' }), h('span', {}, h('strong', { text: `${LEVEL_RANGES[i]}: ` }), name)),
+      h(
+        'li',
+        {},
+        h('span', { class: `swatch sw-${i}`, 'aria-hidden': 'true' }),
+        h('span', {}, h('strong', { text: `${LEVEL_RANGES[i]}: ` }), name),
+      ),
     );
   });
   $('tool-form').addEventListener('submit', (event) => {

@@ -33,7 +33,11 @@ test('api/index.js exports a request handler that serves the app', async () => {
     const health = await fetch(`${base}/api/health`);
     assert.equal(health.status, 200);
     assert.equal((await health.json()).status, 'ok');
-    const bad = await fetch(`${base}/api/plan`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' });
+    const bad = await fetch(`${base}/api/plan`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: '{}',
+    });
     assert.equal(bad.status, 400);
   } finally {
     await new Promise((r) => server.close(r));

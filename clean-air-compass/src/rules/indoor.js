@@ -16,7 +16,10 @@ function indoorItems(p, level, sensitive) {
       level >= 2
         ? 'Outdoor smog leaks indoors whenever windows are open; short, well-timed airing balances fresh air against pollution.'
         : 'Indoor air can be more polluted than outdoor air when it is not refreshed.',
-      { text: 'Keeps outdoor smog out of the rooms where you spend most of your time.', exposure: level >= 2 ? 'high' : 'low' },
+      {
+        text: 'Keeps outdoor smog out of the rooms where you spend most of your time.',
+        exposure: level >= 2 ? 'high' : 'low',
+      },
       'today',
       'free',
     ),
@@ -96,7 +99,10 @@ function indoorItems(p, level, sensitive) {
           'Ventilate while cooking',
           'Run the chimney or exhaust fan and crack a window while cooking, and use the back burners for high-heat frying.',
           'Frying and gas flames release fine particles and nitrogen dioxide indoors.',
-          { text: 'Lowers indoor spikes from cooking, which are often the biggest daily source indoors.', exposure: 'medium' },
+          {
+            text: 'Lowers indoor spikes from cooking, which are often the biggest daily source indoors.',
+            exposure: 'medium',
+          },
           'today',
           'free',
         ),

@@ -7,19 +7,30 @@ const { summarizeForecast } = require('../src/forecast');
 const dnsError = () => Object.assign(new TypeError('fetch failed'), { cause: { code: 'ENOTFOUND' } });
 
 test('uses the normal fetch when it works', async () => {
-  const f = createResilientFetch({ primary: async () => ({ ok: true, tag: 'primary' }), fallback: async () => { throw new Error('no'); } });
+  const f = createResilientFetch({
+    primary: async () => ({ ok: true, tag: 'primary' }),
+    fallback: async () => {
+      throw new Error('no');
+    },
+  });
   assert.equal((await f('https://x.test')).tag, 'primary');
 });
 
 test('retries through public DNS on ENOTFOUND', async () => {
-  const f = createResilientFetch({ primary: async () => { throw dnsError(); }, fallback: async () => ({ ok: true, tag: 'fallback' }) });
+  const f = createResilientFetch({
+    primary: async () => {
+      throw dnsError();
+    },
+    fallback: async () => ({ ok: true, tag: 'fallback' }),
+  });
   assert.equal((await f('https://x.test')).tag, 'fallback');
 });
 
 test('retries through public DNS when the primary attempt hangs', async () => {
   const f = createResilientFetch({
     primaryTimeoutMs: 20,
-    primary: (_u, init) => new Promise((_res, rej) => init.signal.addEventListener('abort', () => rej(init.signal.reason))),
+    primary: (_u, init) =>
+      new Promise((_res, rej) => init.signal.addEventListener('abort', () => rej(init.signal.reason))),
     fallback: async () => ({ ok: true, tag: 'fallback' }),
   });
   assert.equal((await f('https://x.test')).tag, 'fallback');
@@ -27,12 +38,25 @@ test('retries through public DNS when the primary attempt hangs', async () => {
 
 test('does not retry on unrelated errors or when the caller aborted', async () => {
   let calls = 0;
-  const fallback = async () => { calls += 1; return { ok: true }; };
-  const f = createResilientFetch({ primary: async () => { throw new Error('boom'); }, fallback });
+  const fallback = async () => {
+    calls += 1;
+    return { ok: true };
+  };
+  const f = createResilientFetch({
+    primary: async () => {
+      throw new Error('boom');
+    },
+    fallback,
+  });
   await assert.rejects(f('https://x.test'), /boom/);
   const ctrl = new AbortController();
   ctrl.abort();
-  const g = createResilientFetch({ primary: async () => { throw dnsError(); }, fallback });
+  const g = createResilientFetch({
+    primary: async () => {
+      throw dnsError();
+    },
+    fallback,
+  });
   await assert.rejects(g('https://x.test', { signal: ctrl.signal }));
   assert.equal(calls, 0);
   assert.equal(isNetworkFailure(dnsError()), true);

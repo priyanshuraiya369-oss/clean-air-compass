@@ -50,6 +50,10 @@ export function renderSection(section, offset) {
     'section',
     { class: 'plan-section', 'aria-labelledby': headingId },
     h('h3', { id: headingId, text: section.title }),
-    h('ul', { class: 'plan-list' }, section.items.map((item, i) => renderItem(item, offset + i))),
+    h(
+      'ul',
+      { class: 'plan-list' },
+      section.items.map((item, i) => renderItem(item, offset + i)),
+    ),
   );
 }

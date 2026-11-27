@@ -9,11 +9,15 @@ const { WHEN, COST, EXPOSURE, SECTION_IDS, byUrgency } = require('./constants');
  */
 
 // Advice we never pass on, even if the model produces it.
-const UNSAFE = /ozone generator|ionizer|ionizing purifier|\b\d+\s?(mg|mcg|ml)\b|dosage|antibiotic|steroid|burn (wood|coal|charcoal|incense|waste)[^.]*\b(indoors?|inside|room)\b|\bstop taking\b|\bdiagnos/i;
+const UNSAFE =
+  /ozone generator|ionizer|ionizing purifier|\b\d+\s?(mg|mcg|ml)\b|dosage|antibiotic|steroid|burn (wood|coal|charcoal|incense|waste)[^.]*\b(indoors?|inside|room)\b|\bstop taking\b|\bdiagnos/i;
 
 /** Parse JSON even if the model wrapped it in a markdown fence. */
 function parseJson(raw) {
-  const text = String(raw || '').trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+  const text = String(raw || '')
+    .trim()
+    .replace(/^```(?:json)?\s*/i, '')
+    .replace(/\s*```$/, '');
   try {
     return JSON.parse(text);
   } catch {

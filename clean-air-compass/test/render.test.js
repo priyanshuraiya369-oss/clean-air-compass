@@ -25,17 +25,38 @@ function forecast() {
 
 function payload({ ai = false, withForecast = true, language = 'en' } = {}) {
   const profile = validateProfile({ city: 'Delhi', children: true, elderly: true, commute: 'car', language }).value;
-  const plan = buildPlan(profile, { aqi: 185, pm25: 90, city: 'Delhi', source: 'open-meteo', forecast: withForecast ? forecast() : null });
-  const item = (n) => ({ id: `ai-${n}`, title: `AI title ${n}`, action: 'Do it', why: 'Because', impact: { text: 'Helps', co2KgPerMonth: null, exposure: 'high' }, when: 'today', cost: 'free', by: 'gemini' });
+  const plan = buildPlan(profile, {
+    aqi: 185,
+    pm25: 90,
+    city: 'Delhi',
+    source: 'open-meteo',
+    forecast: withForecast ? forecast() : null,
+  });
+  const item = (n) => ({
+    id: `ai-${n}`,
+    title: `AI title ${n}`,
+    action: 'Do it',
+    why: 'Because',
+    impact: { text: 'Helps', co2KgPerMonth: null, exposure: 'high' },
+    when: 'today',
+    cost: 'free',
+    by: 'gemini',
+  });
   const aiResult = ai
     ? {
-        headline: 'AI headline', summary: 'AI summary', disclaimer: 'AI disclaimer', localInsights: ['Local note'],
+        headline: 'AI headline',
+        summary: 'AI summary',
+        disclaimer: 'AI disclaimer',
+        localInsights: ['Local note'],
         sections: plan.sections.map((s) => ({ ...s, items: [item(1), item(2)] })),
         safetyTranslations: { [plan.safety[0].id]: { title: 'Translated', action: 'A', why: 'W', impact: 'I' } },
       }
     : null;
   applyAiToPlan(plan, aiResult, language);
-  return { plan, ai: { used: Boolean(aiResult), model: aiResult ? 'gemini-3.5-flash' : null, available: Boolean(aiResult) } };
+  return {
+    plan,
+    ai: { used: Boolean(aiResult), model: aiResult ? 'gemini-3.5-flash' : null, available: Boolean(aiResult) },
+  };
 }
 
 test('renderPlan fills the gauge, risk meters, chart, safety block and sections', async () => {
@@ -65,7 +86,10 @@ test('renderPlan fills the gauge, risk meters, chart, safety block and sections'
   assert.equal($('ring-text').textContent, '0%');
 
   await sleep(220);
-  assert.match($('air-card').children[0].children.find((c) => c.classes.has('needle')).style.transform, /^rotate\(-?[\d.]+deg\)$/);
+  assert.match(
+    $('air-card').children[0].children.find((c) => c.classes.has('needle')).style.transform,
+    /^rotate\(-?[\d.]+deg\)$/,
+  );
   assert.ok(findAll($('group-risk'), hasClass('meter-fill')).every((f) => f.classes.has('go')));
 });
 
@@ -91,7 +115,10 @@ test('ticking actions updates the progress ring, text and saved progress', async
   assert.match($('progress-text').textContent, /1 of \d+ actions done/);
   assert.ok(dom.window.localStorage.getItem('cac:done:v1').includes('|'));
 
-  state.boxes.forEach((box) => { box.checked = true; box.fire('change'); });
+  state.boxes.forEach((box) => {
+    box.checked = true;
+    box.fire('change');
+  });
   assert.equal($('ring-text').textContent, '100%');
   assert.match($('progress-text').textContent, /All done/);
   assert.equal($('progress-card').classes.has('complete'), true);
@@ -138,7 +165,12 @@ test('pure helpers: bestIndex, arcPath, shareText, planToText, purifierMessage',
 
 test('dom helpers build elements safely (text is never parsed as HTML)', async () => {
   const { h, s, clear } = await load('dom.mjs');
-  const el = h('p', { class: 'x', 'data-a': 'b', skip: false }, '<img src=x onerror=alert(1)>', h('span', { text: 'child' }));
+  const el = h(
+    'p',
+    { class: 'x', 'data-a': 'b', skip: false },
+    '<img src=x onerror=alert(1)>',
+    h('span', { text: 'child' }),
+  );
   assert.ok(el instanceof FakeElement);
   assert.equal(el.getAttribute('class'), 'x');
   assert.equal(el.getAttribute('skip'), null);
