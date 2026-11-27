@@ -4,7 +4,7 @@
   let theme = null;
   try {
     theme = localStorage.getItem('cac:theme');
-  } catch (_) {
+  } catch {
     /* storage unavailable */
   }
   if (theme !== 'light' && theme !== 'dark') {

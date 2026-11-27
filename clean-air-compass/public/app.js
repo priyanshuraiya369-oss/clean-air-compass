@@ -82,7 +82,7 @@
     let payload = {};
     try {
       payload = await res.json();
-    } catch (_) {
+    } catch {
       /* non-JSON error body */
     }
     if (!res.ok) {
@@ -286,7 +286,7 @@
     try {
       await navigator.clipboard.writeText(planToText(lastPlan));
       setStatus('Plan copied to clipboard.');
-    } catch (_) {
+    } catch {
       setStatus('Copy is not available in this browser. Use Print instead.');
     }
   }

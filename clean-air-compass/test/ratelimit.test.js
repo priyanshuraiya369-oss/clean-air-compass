@@ -34,3 +34,10 @@ test('TtlCache expires entries and evicts when full', () => {
   assert.equal(c.get('x'), undefined);
   assert.equal(c.get('z'), 3);
 });
+
+test('TtlCache uses a bounded default capacity', () => {
+  const c = new TtlCache(100);
+  for (let i = 0; i < 501; i++) c.set(`key-${i}`, i);
+  assert.equal(c.get('key-0'), undefined);
+  assert.equal(c.get('key-500'), 500);
+});

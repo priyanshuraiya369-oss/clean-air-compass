@@ -14,11 +14,11 @@ Built for PromptWars Virtual, Challenge 6: Urban Air Quality Assistant.
 * **Zero runtime dependencies** (Node.js built-ins only): tiny, fast and nothing to compromise.
 * **Secure by design:** strict validation, CSP without inline code, rate limiting, secrets server-side only. See [SECURITY.md](SECURITY.md).
 * **Accessible:** WCAG-oriented, keyboard and screen-reader friendly, dark mode, reduced motion, print. See [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md).
-* **Tested:** 43 automated tests (unit + HTTP integration with mocked upstreams), run in CI.
+* **Tested:** automated unit and HTTP integration tests with mocked upstreams, run in CI.
 
 ## Quick start
 
-Requires Node.js 18.18+ (20 or 22 recommended).
+Requires Node.js 20 or 22.
 
 ```bash
 git clone <your-repo-url> && cd clean-air-compass
@@ -32,8 +32,10 @@ npm start
 Open http://localhost:8080 and press **Try an example**.
 
 ```bash
-npm test        # 43 tests, no network required
+npm test        # no network required
 npm run check   # syntax check
+npm install     # optional: install development tools for linting
+npm run lint
 ```
 
 ## Configuration
@@ -65,17 +67,12 @@ gcloud run deploy clean-air-compass --source . --region asia-south1 \
 
 ```
 server.js            HTTP server, routing, security headers, static files
-src/aqi.js           AQI categories, PM2.5 to AQI
-src/validate.js      Allow-list input validation
-src/geo.js           Geocoding + live air quality + TTL cache
-src/engine.js        Rules engine that builds the plan
-src/impact.js        CO2 / exposure estimate model
-src/gemini.js        Gemini client with sanitised output
-src/faq.js           Offline follow-up answers
-src/ratelimit.js     Bounded rate limiter
-public/              Accessible UI (HTML, CSS, JS)
-test/                node:test suites
-docs/                Architecture and accessibility notes
+api/index.js         Vercel serverless entry point
+src/                 Validation, AQI, data clients, rules engine, AI guardrails and HTTP helpers
+src/rules/            Personalised routine, indoor-air and sustainable-action rules
+public/               Accessible UI (HTML, CSS, modular browser JavaScript)
+test/                 node:test suites
+docs/                 Architecture and accessibility notes
 ```
 
 ## Evaluation criteria mapping
@@ -85,7 +82,7 @@ docs/                Architecture and accessibility notes
 | Code quality | Small single-purpose modules, JSDoc, no dependencies, consistent style, CI |
 | Security | See [SECURITY.md](SECURITY.md) |
 | Efficiency | Pre-compressed static files, ETags, TTL caches, bounded memory, no framework |
-| Testing | 43 tests covering validation, rules, impact maths, limiter, AI fallback, HTTP and security headers |
+| Testing | Unit and integration coverage for validation, rules, impact maths, limiter, AI fallback, HTTP and security headers |
 | Accessibility | See [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md) |
 | Problem alignment | See coverage table in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 

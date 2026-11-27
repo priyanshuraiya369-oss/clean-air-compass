@@ -1,8 +1,10 @@
 'use strict';
 
+const DEFAULT_MAX_ENTRIES = 500;
+
 /** Tiny TTL cache with a hard size cap (oldest entry evicted first). */
 class TtlCache {
-  constructor(ttlMs, max = MAX_CACHE_ENTRIES, now = Date.now) {
+  constructor(ttlMs, max = DEFAULT_MAX_ENTRIES, now = Date.now) {
     this.ttlMs = ttlMs;
     this.max = max;
     this.now = now;
